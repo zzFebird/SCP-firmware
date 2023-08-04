@@ -12,6 +12,7 @@
 
 #include <fwk_attributes.h>
 #include <fwk_noreturn.h>
+#include <fwk_log.h>
 
 #include <stdbool.h>
 
@@ -46,4 +47,19 @@ noreturn FWK_WEAK void arch_exception_invalid(void)
     while (true) {
         __WFI();
     }
+}
+
+noreturn void arch_exception_debugmonitor(void)
+{
+	FWK_LOG_INFO("%s\n", __func__);
+    while (true) {
+        __WFI();
+    }
+}
+
+extern void systick_stop(void);
+void arch_exception_systick(void)
+{
+	systick_stop();
+	FWK_LOG_INFO("%s\n", __func__);
 }

@@ -25,4 +25,6 @@ noreturn void arch_exception_reset(void);
  */
 noreturn void arch_exception_invalid(void);
 
+noreturn void arch_exception_debugmonitor(void);
+void arch_exception_systick(void);
 #endif /* ARCH_EXCEPTIONS_H */

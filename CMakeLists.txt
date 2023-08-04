@@ -421,6 +421,13 @@ macro(add_executable target)
                         "$<TARGET_FILE:${target}>"
                         "$<TARGET_FILE_DIR:${target}>/$<TARGET_FILE_BASE_NAME:${target}>.bin"
                     COMMENT "Generating flat binary ${target}.bin")
+                add_custom_command(
+                    TARGET ${target} POST_BUILD
+                    COMMAND ${CMAKE_OBJDUMP}
+                    ARGS -S
+                        "$<TARGET_FILE:${target}>" ">"
+                        "$<TARGET_FILE_DIR:${target}>/$<TARGET_FILE_BASE_NAME:${target}>.asm"
+                    COMMENT "Generating ${target}.asm")
                 # cmake-format: on
             endif()
         endif()

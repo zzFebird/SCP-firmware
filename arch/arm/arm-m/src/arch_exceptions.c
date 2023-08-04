@@ -77,13 +77,13 @@ const struct {
             (uintptr_t)(arch_exception_invalid),
 #endif
         [NVIC_USER_IRQ_OFFSET + DebugMonitor_IRQn - 1] =
-            (uintptr_t)(arch_exception_invalid),
+            (uintptr_t)(arch_exception_debugmonitor),
 
         [NVIC_USER_IRQ_OFFSET + SVCall_IRQn - 1] =
             (uintptr_t)(arch_exception_invalid),
         [NVIC_USER_IRQ_OFFSET + PendSV_IRQn - 1] =
             (uintptr_t)(arch_exception_invalid),
         [NVIC_USER_IRQ_OFFSET + SysTick_IRQn - 1] =
-            (uintptr_t)(arch_exception_invalid),
+            (uintptr_t)(arch_exception_systick),
     },
 };
