@@ -30,9 +30,6 @@ target_sources(
             "${CMAKE_CURRENT_SOURCE_DIR}/src/arch_handlers.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/src/arch_main.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/src/arch_nvic.c"
-            "${CMAKE_CURRENT_SOURCE_DIR}/src/breakpoint-hard.c"
-            "${CMAKE_CURRENT_SOURCE_DIR}/src/breakpoint-soft.c"
-            "${CMAKE_CURRENT_SOURCE_DIR}/src/breakpoint.c"
     PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/arch_mm.c")
 
 target_link_libraries(arch-arm-m PUBLIC cmsis::core-m)

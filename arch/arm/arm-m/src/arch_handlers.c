@@ -57,9 +57,7 @@ noreturn void arch_exception_debugmonitor(void)
     }
 }
 
-extern void systick_stop(void);
 void arch_exception_systick(void)
 {
-	systick_stop();
 	FWK_LOG_INFO("%s\n", __func__);
 }

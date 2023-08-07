@@ -27,8 +27,6 @@
 #include <fwk_status.h>
 
 #include <string.h>
-#include <breakpoint.h>
-#include <hw_debug.h>
 
 extern int fwk_interrupt_init(const struct fwk_arch_interrupt_driver *driver);
 
@@ -64,6 +62,7 @@ static int fwk_arch_interrupt_init(int (*interrupt_init_handler)(
 
 #define BIT(x)			(1UL << x)
 
+/*
 #define FP_CTRL					0xE0002000UL
 #define FP_CTRL_ENABLE_POS		0
 #define FP_CTRL_ENABLE_MSK		(1UL << FP_CTRL_ENABLE_POS)
@@ -77,15 +76,6 @@ static int fwk_arch_interrupt_init(int (*interrupt_init_handler)(
 #define FP_CTRL_NUM_LIT_MSK 	(0xFUL << FP_CTRL_NUM_LIT_POS)
 
 #define FP_COMP(n)				(0xE0002008UL + (n << 2))
-#define FP_COMP_ENABLE_POS		0
-#define FP_COMP_ENABLE_MSK		(1UL << FP_COMP_ENABLE_POS)
-#define FP_COMP_COMP_POS		2
-#define FP_COMP_COMP_MSK		(0x7FFFFFFUL << FP_COMP_COMP_POS)
-#define FP_COMP_REPLACE_POS		30
-#define FP_COMP_REPLACE_RMP		(0 << FP_COMP_REPLACE_POS)
-#define FP_COMP_REPLACE_BL		(1 << FP_COMP_REPLACE_POS)
-#define FP_COMP_REPLACE_BH		(2 << FP_COMP_REPLACE_POS)
-#define FP_COMP_REPLACE_BB		(3 << FP_COMP_REPLACE_POS)
 
 #define FP_LAR					0xE0002FB0UL
 #define FP_LSR					0xE0002FB4UL
@@ -93,9 +83,9 @@ static int fwk_arch_interrupt_init(int (*interrupt_init_handler)(
 
 #define DEMCR			0xE000EDFCUL
 #define MON_EN_POS		16
-#define DCB_BASE                        (SCS_BASE + 0x0DF0)                                     /* Debug Control Block Base Address */
-#define DCB_DEMCR                       (volatile uint32_t *) (DCB_BASE + 0x00C)                /* Debug Exception and Monitor Control Register */
-#define SCB_ICSR                        (volatile uint32_t *) (SCB_BASE + 0x004)                /* Interrupt Control and State Register */
+#define DCB_BASE                        (SCS_BASE + 0x0DF0)
+#define DCB_DEMCR                       (volatile uint32_t *) (DCB_BASE + 0x00C)
+#define SCB_ICSR                        (volatile uint32_t *) (SCB_BASE + 0x004)
 
 void fpb_trigger(void)
 {
@@ -167,27 +157,7 @@ void systick_stop(void)
 {
 	clearbits32(SYST_CSR, SYST_CSR_ENABLE_MSK);
 }
-
-int add_breakpoint(void *addr)
-{
-	struct breakpoint *b;
-
-	/*
-	 * If there is no kprobe at this addr, give it a new bkpt,
-	 * otherwise share the existing bkpt.
-	 */
-
-	b = breakpoint_install((uint32_t)addr);
-	if (b != NULL)
-		enable_breakpoint(b);
-	else
-		goto arch_add_error;
-
-	return 0;
-
-arch_add_error:
-	return -1;
-}
+*/
 
 void dump_reg32(uint32_t addr, uint32_t n)
 {
@@ -201,18 +171,10 @@ void dump_reg32(uint32_t addr, uint32_t n)
 
 void run_test_code(void)
 {
-	int ret;
 	//dump_cache_implements();
 
 	//systick_init();
 
-	ret = add_breakpoint((void *)fpb_trigger + 8);
-	FWK_LOG_INFO("add breakpoint ret = %d\n", ret);
-	fpb_trigger();
-	dump_reg32((uint32_t)FPB_CTRL, 1);
-	dump_reg32((uint32_t)DCB_DEMCR, 1);
-	dump_reg32((uint32_t)FPB_COMP, 8);
-	dump_reg32((uint32_t)SCB_ICSR, 1);
 }
 
 int fwk_arch_init(const struct fwk_arch_init_driver *driver)
