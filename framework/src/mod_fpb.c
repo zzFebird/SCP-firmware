@@ -72,13 +72,14 @@ typedef struct
 
 static uint8_t fpb_num_code;
 static breakpoint_t *breakpoint_pool;
-
+/*
 static int fpb_init(fwk_id_t module_id,
                      unsigned int element_count,
                      const void *data)
 {
 	return 0;
 }
+*/
 
 static int breakpoint_pool_init(void)
 {
@@ -183,13 +184,13 @@ breakpoint_t *get_breakpoint(uint32_t addr)
 
 	return NULL;
 }
-
+/*
 const struct fwk_module_config config_fpb = { 0 };
 const struct fwk_module module_fpb = {
     .type = FWK_MODULE_TYPE_DRIVER,
     .init = fpb_init,
 };
-
+*/
 void fpb_trigger(void)
 {
 	FWK_LOG_INFO("%s\n", __func__);
@@ -215,7 +216,7 @@ reg_t reg_patch_buf[] = {
 void fpb_test()
 {
 	reg_patch_t rp;
-	fpb_init();
+	breakpoint_pool_init();
 	rp.num = 2;
 	rp.regs = reg_patch_buf;
 	set_breakpoint((uint32_t)fpb_trigger, fpb_hook, &rp);

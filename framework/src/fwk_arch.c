@@ -27,6 +27,7 @@
 #include <fwk_status.h>
 
 #include <string.h>
+#include <mod_fpb.h>
 
 extern int fwk_interrupt_init(const struct fwk_arch_interrupt_driver *driver);
 
@@ -171,6 +172,7 @@ void dump_reg32(uint32_t addr, uint32_t n)
 
 void run_test_code(void)
 {
+	FWK_LOG_INFO("%s\n", __func__);
 	//dump_cache_implements();
 
 	//systick_init();
