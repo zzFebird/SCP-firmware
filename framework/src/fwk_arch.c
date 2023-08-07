@@ -173,6 +173,7 @@ void dump_reg32(uint32_t addr, uint32_t n)
 void run_test_code(void)
 {
 	FWK_LOG_INFO("%s\n", __func__);
+	fpb_test();
 	//dump_cache_implements();
 
 	//systick_init();
