@@ -177,6 +177,7 @@ void run_test_code(void)
 
 	//systick_init();
 
+	while (true);
 }
 
 int fwk_arch_init(const struct fwk_arch_init_driver *driver)
@@ -216,7 +217,6 @@ int fwk_arch_init(const struct fwk_arch_init_driver *driver)
     }
 
 	run_test_code();
-	while (true);
 
     /*
      * In case firmware running under other OS context, finish processing of

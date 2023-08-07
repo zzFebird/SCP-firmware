@@ -38,6 +38,7 @@ target_sources(
             "${CMAKE_CURRENT_SOURCE_DIR}/src/fwk_delayed_resp.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/src/fwk_time.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/src/stdlib.c"
+            "${CMAKE_CURRENT_SOURCE_DIR}/src/mod_fpb.c"
             "${CMAKE_CURRENT_SOURCE_DIR}/src/fwk_core.c")
 
 
