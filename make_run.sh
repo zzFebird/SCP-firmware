@@ -24,12 +24,12 @@ SCP_RAM_PATH=${PRODUCT_BUILD_PATH}/firmware-scp_ramfw/bin/$PRODUCT-bl2.bin
 MCP_ROM_PATH=${PRODUCT_BUILD_PATH}/firmware-mcp_romfw/bin/$PRODUCT-mcp-bl1.bin
 
 # Creating the NOR flash image
-NOR_PATH=/tmp/nor.bin
+NOR_PATH=$HOME/tmp/nor.bin
 # dd if=/dev/zero of=${NOR_PATH} bs=1024 count=62976 && \
 # cat ${SCP_RAM_PATH} >> ${NOR_PATH}
 
 # Booting the firmware
-$MODEL \
-    -C css0.scp.ROMloader.fname=${SCP_ROM_PATH} \
-    -C css0.mcp.ROMloader.fname=${MCP_ROM_PATH} \
-    -C board0.flashloader0.fname=${NOR_PATH}
+# $MODEL \
+#     -C css0.scp.ROMloader.fname=${SCP_ROM_PATH} \
+#     -C css0.mcp.ROMloader.fname=${MCP_ROM_PATH} \
+#     -C board0.flashloader0.fname=${NOR_PATH}

@@ -27,6 +27,8 @@
 #include <fwk_status.h>
 
 #include <string.h>
+#include <breakpoint.h>
+#include <hw_debug.h>
 
 extern int fwk_interrupt_init(const struct fwk_arch_interrupt_driver *driver);
 
@@ -91,6 +93,9 @@ static int fwk_arch_interrupt_init(int (*interrupt_init_handler)(
 
 #define DEMCR			0xE000EDFCUL
 #define MON_EN_POS		16
+#define DCB_BASE                        (SCS_BASE + 0x0DF0)                                     /* Debug Control Block Base Address */
+#define DCB_DEMCR                       (volatile uint32_t *) (DCB_BASE + 0x00C)                /* Debug Exception and Monitor Control Register */
+#define SCB_ICSR                        (volatile uint32_t *) (SCB_BASE + 0x004)                /* Interrupt Control and State Register */
 
 void fpb_trigger(void)
 {
@@ -163,6 +168,53 @@ void systick_stop(void)
 	clearbits32(SYST_CSR, SYST_CSR_ENABLE_MSK);
 }
 
+int add_breakpoint(void *addr)
+{
+	struct breakpoint *b;
+
+	/*
+	 * If there is no kprobe at this addr, give it a new bkpt,
+	 * otherwise share the existing bkpt.
+	 */
+
+	b = breakpoint_install((uint32_t)addr);
+	if (b != NULL)
+		enable_breakpoint(b);
+	else
+		goto arch_add_error;
+
+	return 0;
+
+arch_add_error:
+	return -1;
+}
+
+void dump_reg32(uint32_t addr, uint32_t n)
+{
+    uint32_t i;
+
+    for (i = 0; i < n; i++) {
+        FWK_LOG_INFO("0x%08lX: 0x%08lx\n", addr, read32(addr));
+        addr += 4;
+    }
+}
+
+void run_test_code(void)
+{
+	int ret;
+	//dump_cache_implements();
+
+	//systick_init();
+
+	ret = add_breakpoint((void *)fpb_trigger + 8);
+	FWK_LOG_INFO("add breakpoint ret = %d\n", ret);
+	fpb_trigger();
+	dump_reg32((uint32_t)FPB_CTRL, 1);
+	dump_reg32((uint32_t)DCB_DEMCR, 1);
+	dump_reg32((uint32_t)FPB_COMP, 8);
+	dump_reg32((uint32_t)SCB_ICSR, 1);
+}
+
 int fwk_arch_init(const struct fwk_arch_init_driver *driver)
 {
     int status;
@@ -194,20 +246,13 @@ int fwk_arch_init(const struct fwk_arch_init_driver *driver)
         return FWK_E_PANIC;
     }
 
-	//dump_cache_implements();
-
-	fpb_init();
-	systick_init();
-	FWK_LOG_INFO("call fpb_trigger\n");
-	fpb_trigger();
-	FWK_LOG_INFO("fpb_trigger return\n");
-	
-	while (true);
-
     status = fwk_module_start();
     if (!fwk_expect(status == FWK_SUCCESS)) {
         return FWK_E_PANIC;
     }
+
+	run_test_code();
+	while (true);
 
     /*
      * In case firmware running under other OS context, finish processing of
