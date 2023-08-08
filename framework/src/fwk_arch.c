@@ -206,18 +206,20 @@ int fwk_arch_init(const struct fwk_arch_init_driver *driver)
         return FWK_E_PANIC;
     }
 
+	FWK_LOG_INFO("log init done\n");
+
     /* Initialize interrupt management */
     status = fwk_arch_interrupt_init(driver->interrupt);
     if (!fwk_expect(status == FWK_SUCCESS)) {
         return FWK_E_PANIC;
     }
 
+	run_test_code();
+
     status = fwk_module_start();
     if (!fwk_expect(status == FWK_SUCCESS)) {
         return FWK_E_PANIC;
     }
-
-	run_test_code();
 
     /*
      * In case firmware running under other OS context, finish processing of
