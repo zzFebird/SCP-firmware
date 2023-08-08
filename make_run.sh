@@ -28,8 +28,12 @@ NOR_PATH=$HOME/tmp/nor.bin
 dd if=/dev/zero of=${NOR_PATH} bs=1024 count=62976 && \
 cat ${SCP_RAM_PATH} >> ${NOR_PATH}
 
+DEBUG="--allow-debug-plugin --plugin ~/lib/GDBRemoteConnection.so "
+if [ $# -gt 0 ] && [ $1 = "ng" ]; then
+	DEBUG=''
+fi
 # Booting the firmware
-$MODEL \
+$MODEL $DEBUG \
     -C css0.scp.ROMloader.fname=${SCP_ROM_PATH} \
     -C css0.mcp.ROMloader.fname=${MCP_ROM_PATH} \
     -C board0.flashloader0.fname=${NOR_PATH}

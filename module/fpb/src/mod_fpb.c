@@ -23,7 +23,7 @@ typedef struct
 	__IOM uint32_t *FP_COMP;
 } FPB_Type;
 
-#define FPB_BASE	(SCS_BASE + 0x2000UL)
+#define FPB_BASE	0xE0002000UL
 #define FPB			((FPB_Type *)FPB_BASE)
 
 /* FP_CTRL */
@@ -128,6 +128,9 @@ int fpb_enable(void)
 static int alloc_breakpoint(void)
 {
 	int i;
+
+	if (breakpoint_pool == NULL)
+			return -1;
 
 	for (i = 0; i < fpb_num_code; i++)
 		if (breakpoint_pool[i].en == 0)
