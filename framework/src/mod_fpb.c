@@ -69,9 +69,15 @@ typedef struct
 
 #define THUMB_INST_MSK			(~1UL)
 
-
 static uint8_t fpb_num_code;
+#define USE_STATIC_POOL
+#ifdef USE_STATIC_POOL
+#define MAX_BREAKPOINTS_NUM		8
+static breakpoint_t breakpoint_pool[MAX_BREAKPOINTS_NUM];
+#else
 static breakpoint_t *breakpoint_pool;
+#endif
+
 /*
 static int fpb_init(fwk_id_t module_id,
                      unsigned int element_count,
@@ -96,7 +102,18 @@ static int breakpoint_pool_init(void)
 	fpb_num_code = ((tmp & FP_CTRL_NUM_CODE_L_Msk) >> FP_CTRL_NUM_CODE_L_Pos) |
 					((tmp & FP_CTRL_NUM_CODE_H_Msk) >> (FP_CTRL_NUM_CODE_H_Pos -
 					FP_CTRL_NUM_CODE_SHIFT));	
+
+#ifdef USE_STATIC_POOL
+	b = breakpoint_pool;
+#else
 	b = fwk_mm_alloc(fpb_num_code, sizeof(b[0]));
+	if (b == NULL) {
+		FWK_LOG_ERR("malloc failed\n");
+		return -1;
+	}
+
+	breakpoint_pool = b;
+#endif
 
 	unlock_fpb();
 	FPB->FP_CTRL = FP_CTRL_KEY_Msk & ~FP_CTRL_ENABLE_Msk;
@@ -106,7 +123,6 @@ static int breakpoint_pool_init(void)
 	}
 
 	lock_fpb();
-	breakpoint_pool = b;
 
 	return 0;
 }
