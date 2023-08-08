@@ -28,7 +28,7 @@ NOR_PATH=$HOME/tmp/nor.bin
 dd if=/dev/zero of=${NOR_PATH} bs=1024 count=62976 && \
 cat ${SCP_RAM_PATH} >> ${NOR_PATH}
 
-DEBUG="--allow-debug-plugin --plugin ~/lib/GDBRemoteConnection.so "
+DEBUG="--allow-debug-plugin --plugin $HOME/lib/GDBRemoteConnection.so "
 if [ $# -gt 0 ] && [ $1 = "ng" ]; then
 	DEBUG=''
 fi
