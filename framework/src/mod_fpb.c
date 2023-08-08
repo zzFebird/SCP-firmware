@@ -23,7 +23,7 @@ typedef struct
 	__IOM uint32_t *FP_COMP;
 } FPB_Type;
 
-#define FPB_BASE	(SCS_BASE + 0x2000UL)
+#define FPB_BASE	(0xE0002000)
 #define FPB			((FPB_Type *)FPB_BASE)
 
 /* FP_CTRL */
@@ -130,6 +130,9 @@ static int alloc_breakpoint(void)
 {
 	int i;
 
+	if (breakpoint_pool == NULL)
+		return -1;
+
 	for (i = 0; i < fpb_num_code; i++)
 		if (breakpoint_pool[i].en == 0)
 			return i;
@@ -174,6 +177,9 @@ breakpoint_t *get_breakpoint(uint32_t addr)
 {
 	int i;
 	uint32_t iaddr = addr & THUMB_INST_MSK;
+
+	if (breakpoint_pool == NULL)
+		return NULL;
 
 	for (i = 0; i < fpb_num_code; i++) {
 		if (breakpoint_pool[i].en == 0)
